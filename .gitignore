@@ -1,0 +1,19 @@
+node_modules
+.output
+.nitro
+.tanstack
+dist
+.vite
+
+# Generated route tree
+src/routeTree.gen.ts
+
+# Env / logs
+.env
+.env.*
+*.log
+.DS_Store
+
+## Panda
+styled-system
+styled-system-studio

@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls -la \"D:/documents-from-c-2026/-Rich/-Downloads/gamified-app\" 2>/dev/null && echo \"---ROOT---\" && ls -la \"D:/documents-from-c-2026/-Rich/-Downloads\")",
+      "Bash(npm --version)"
+    ]
+  }
+}

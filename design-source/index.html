@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fairshot — Project Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;0,6..72,700;1,6..72,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f4f2;
+  --surface: #ffffff;
+  --fg: #3f3a33;
+  --muted: #8a8277;
+  --border: rgba(63,58,51,0.08);
+  --accent: #0f8a7d;
+  --accent-light: rgba(15,138,125,0.08);
+  --font-display: 'Newsreader', 'Iowan Old Style', Georgia, serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-mono: 'SF Mono', ui-monospace, Menlo, monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  color: var(--fg);
+  background: var(--bg);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 80px 48px 60px;
+}
+.brand {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--accent);
+  margin-bottom: 24px;
+}
+h1 {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 5vw, 56px);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+}
+h1 em {
+  font-style: italic;
+  color: var(--accent);
+}
+.subtitle {
+  font-family: var(--font-display);
+  font-size: clamp(18px, 2.5vw, 24px);
+  font-weight: 400;
+  font-style: italic;
+  color: var(--muted);
+  margin-bottom: 48px;
+}
+.section-title {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 600;
+  margin: 48px 0 20px;
+  letter-spacing: -0.01em;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 28px;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s ease;
+  display: block;
+}
+.card:hover {
+  border-color: rgba(63,58,51,0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(63,58,51,0.05);
+}
+.card-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+.card-title {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+.card-desc {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.55;
+}
+.card-meta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 16px;
+}
+.full {
+  grid-column: 1 / -1;
+}
+.footer {
+  margin-top: 64px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--muted);
+}
+.footer a {
+  color: var(--muted);
+  text-decoration: none;
+}
+.footer a:hover {
+  color: var(--fg);
+}
+@media (max-width: 600px) {
+  .container { padding: 60px 24px 40px; }
+  .grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="brand">A Soft Tooling product</div>
+  <h1>Fair<em>shot</em></h1>
+  <p class="subtitle">Job search without the shame spiral.</p>
+
+  <div class="section-title">Live Prototypes</div>
+  <div class="grid">
+    <a href="fairshot.html" class="card">
+      <div class="card-label">Marketing Page</div>
+      <div class="card-title">Landing Page</div>
+      <div class="card-desc">Waitlist landing with problem framing, how-it-works, milestone pricing, and philosophy stance.</div>
+      <div class="card-meta">HTML · Standalone</div>
+    </a>
+    <a href="fairshot-app.html" class="card">
+      <div class="card-label">App Prototype</div>
+      <div class="card-title">Dashboard</div>
+      <div class="card-desc">React prototype with Resume optimizer, Role Discovery grid, and Application Tracker Kanban.</div>
+      <div class="card-meta">React · Inline JSX</div>
+    </a>
+  </div>
+
+  <div class="section-title">Documentation</div>
+  <div class="grid">
+    <a href="fairshot-concept.md" class="card">
+      <div class="card-label">Product</div>
+      <div class="card-title">Concept Document</div>
+      <div class="card-desc">Vision, core features, user journeys, pricing model, competitive positioning, and success metrics.</div>
+      <div class="card-meta">Markdown</div>
+    </a>
+    <a href="fairshot-marketing.md" class="card">
+      <div class="card-label">Brand</div>
+      <div class="card-title">Marketing & Messaging</div>
+      <div class="card-desc">Voice guidelines, messaging hierarchy, copy bank, SEO keywords, and launch sequence.</div>
+      <div class="card-meta">Markdown</div>
+    </a>
+    <a href="fairshot-handoff.md" class="card full">
+      <div class="card-label">Design</div>
+      <div class="card-title">Design Handoff</div>
+      <div class="card-desc">Complete design tokens (color, type, spacing), layout patterns, component specs, and parent brand context.</div>
+      <div class="card-meta">Markdown</div>
+    </a>
+  </div>
+
+  <div class="footer">
+    <p>Fairshot is a Soft Tooling product. Built for humans, not robots.</p>
+  </div>
+</div>
+
+</body>
+</html>

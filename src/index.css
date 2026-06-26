@@ -1,0 +1,7 @@
+/* ============================================================
+   Fairshot — Panda CSS layer entry
+   Park UI preset provides reset, base, tokens, recipes, utilities.
+   Order matters: reset → base → tokens → recipes → utilities.
+   ============================================================ */
+
+@layer reset, base, tokens, recipes, utilities;

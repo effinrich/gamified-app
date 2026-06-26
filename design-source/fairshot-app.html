@@ -1,0 +1,689 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fairshot — Job Search That Works</title>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;0,6..72,700;1,6..72,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f4f2;
+  --surface: #ffffff;
+  --fg: #3f3a33;
+  --muted: #8a8277;
+  --border: rgba(63,58,51,0.08);
+  --accent: #0f8a7d;
+  --accent-light: rgba(15,138,125,0.08);
+  --font-display: 'Newsreader', 'Iowan Old Style', Georgia, serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-mono: 'SF Mono', ui-monospace, Menlo, monospace;
+  --good: #0f8a7d;
+  --warning: #d4a843;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body, #root { height: 100%; }
+body {
+  font-family: var(--font-body);
+  color: var(--fg);
+  background: var(--bg);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+.app { display: flex; height: 100vh; overflow: hidden; }
+
+/* Sidebar */
+.sidebar {
+  width: 240px;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 28px 20px;
+  flex-shrink: 0;
+}
+.sidebar-logo {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-bottom: 4px;
+  text-decoration: none;
+  color: var(--fg);
+}
+.sidebar-logo span { color: var(--accent); }
+.sidebar-sub {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  margin-bottom: 36px;
+}
+.nav-item {
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+  font-family: var(--font-body);
+}
+.nav-item:hover, .nav-item.active {
+  background: var(--accent-light);
+  color: var(--fg);
+}
+.nav-icon { width: 16px; height: 16px; opacity: 0.7; }
+
+/* Main */
+.main { flex: 1; overflow-y: auto; padding: 32px 40px; }
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+}
+.page-title {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.page-subtitle {
+  font-size: 14px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+/* Milestones */
+.milestone-bar {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 24px;
+  margin-bottom: 28px;
+}
+.milestone-step {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+}
+.milestone-step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 32px;
+  background: var(--border);
+}
+.milestone-badge {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+.milestone-badge.done {
+  background: var(--good);
+  color: white;
+}
+.milestone-badge.current {
+  background: var(--accent);
+  color: white;
+  box-shadow: 0 0 0 4px rgba(15,138,125,0.15);
+}
+.milestone-badge.locked {
+  background: var(--border);
+  color: var(--muted);
+}
+.milestone-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fg);
+}
+.milestone-price {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* Cards */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px;
+  margin-bottom: 16px;
+}
+.card-title {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.card-body {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* Inputs */
+.input, .textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.input:focus, .textarea:focus { border-color: var(--accent); }
+.textarea { min-height: 160px; resize: vertical; }
+.btn-primary {
+  padding: 11px 22px;
+  border-radius: 10px;
+  border: none;
+  background: var(--accent);
+  color: white;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-primary:hover { filter: brightness(1.08); transform: translateY(-1px); }
+.btn-secondary {
+  padding: 11px 22px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-secondary:hover { border-color: var(--muted); color: var(--fg); }
+
+/* Job cards */
+.job-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+.job-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.job-card:hover {
+  border-color: rgba(63,58,51,0.15);
+  box-shadow: 0 4px 16px rgba(63,58,51,0.06);
+}
+.job-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+.job-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--fg);
+}
+.job-company {
+  font-size: 13px;
+  color: var(--muted);
+}
+.job-meta {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+.job-tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  background: var(--bg);
+  padding: 4px 8px;
+  border-radius: 5px;
+}
+.job-scores {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+.job-score {
+  text-align: center;
+}
+.job-score-num {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.job-score-num.good { color: var(--good); }
+.job-score-num.warning { color: var(--warning); }
+.job-score-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin-top: 2px;
+}
+.job-actions {
+  display: flex;
+  gap: 8px;
+}
+.job-actions .btn-primary,
+.job-actions .btn-secondary {
+  padding: 8px 16px;
+  font-size: 13px;
+}
+
+/* Tracker */
+.tracker-board {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+.tracker-column {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  min-height: 400px;
+}
+.tracker-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.tracker-name {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.tracker-count {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted);
+  background: var(--bg);
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+.tracker-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.tracker-card:hover {
+  border-color: rgba(63,58,51,0.15);
+}
+.tracker-card-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.tracker-card-co {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+.tracker-card-actions {
+  display: flex;
+  gap: 6px;
+}
+.tracker-btn {
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.tracker-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Resume preview */
+.resume-preview {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--fg);
+  font-family: var(--font-body);
+  white-space: pre-wrap;
+}
+.resume-section-title {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--fg);
+}
+
+/* Responsive */
+@media (max-width: 1000px) {
+  .job-grid { grid-template-columns: 1fr; }
+  .tracker-board { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 700px) {
+  .sidebar { display: none; }
+  .main { padding: 20px; }
+  .milestone-bar { flex-direction: column; gap: 16px; }
+  .milestone-step:not(:last-child)::after { display: none; }
+  .tracker-board { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState } = React;
+
+const MOCK_JOBS = [
+  { id: 1, title: 'Senior Frontend Engineer', company: 'Stripe', location: 'Remote', salary: '$180–240k', transparency: 92, response: 78, fit: 88, tags: ['React', 'TypeScript'] },
+  { id: 2, title: 'Staff Engineer', company: 'Vercel', location: 'Remote', salary: '$200–280k', transparency: 85, response: 65, fit: 82, tags: ['Next.js', 'Edge'] },
+  { id: 3, title: 'Product Engineer', company: 'Linear', location: 'SF / Remote', salary: '$160–220k', transparency: 70, response: 45, fit: 75, tags: ['React', 'Design'] },
+  { id: 4, title: 'Frontend Lead', company: 'Notion', location: 'NY / Remote', salary: '$170–230k', transparency: 88, response: 55, fit: 80, tags: ['React', 'Performance'] },
+  { id: 5, title: 'UI Engineer', company: 'Figma', location: 'SF / Remote', salary: '$150–200k', transparency: 90, response: 72, fit: 85, tags: ['Canvas', 'WebGL'] },
+  { id: 6, title: 'Senior Full Stack', company: 'Supabase', location: 'Remote', salary: '$140–190k', transparency: 95, response: 60, fit: 70, tags: ['Postgres', 'Open Source'] },
+];
+
+const INITIAL_APPS = [
+  { id: 1, title: 'Senior Frontend Engineer', company: 'Stripe', stage: 'interview' },
+  { id: 2, title: 'Staff Engineer', company: 'Vercel', stage: 'screening' },
+  { id: 3, title: 'Product Engineer', company: 'Linear', stage: 'applied' },
+  { id: 4, title: 'UI Engineer', company: 'Figma', stage: 'offer' },
+];
+
+const STAGES = ['applied', 'screening', 'interview', 'offer'];
+const STAGE_NAMES = { applied: 'Applied', screening: 'Screening', interview: 'Interview', offer: 'Offer' };
+
+const ResumeScreen = () => {
+  const [input, setInput] = useState('');
+  const [parsed, setParsed] = useState(false);
+
+  const handleParse = () => setParsed(true);
+
+  return (
+    <div>
+      <div className="main-header">
+        <div>
+          <div className="page-title">Your Resume</div>
+          <div className="page-subtitle">Paste your LinkedIn or experience and we will reframe it.</div>
+        </div>
+        <button className="btn-primary" onClick={handleParse}>Optimize</button>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
+        <div className="card">
+          <div className="card-title">Paste your background</div>
+          <div className="card-body" style={{ marginBottom: 16 }}>
+            Drop a LinkedIn URL or paste your experience raw. We never score you down — we just find stronger framings.
+          </div>
+          <textarea
+            className="textarea"
+            placeholder="e.g. Senior Frontend Engineer at Acme Corp. Built design system used by 12 teams..."
+            value={input}
+            onChange={e => setInput(e.target.value)}
+          />
+          <div style={{ marginTop: 12, fontSize: 12, color: 'var(--muted)' }}>
+            No AI shaming. No "weak action verbs." Just better framing.
+          </div>
+        </div>
+
+        <div className="card">
+          <div className="card-title">Preview</div>
+          {parsed || input.length > 30 ? (
+            <div>
+              <div style={{ marginBottom: 16 }}>
+                <div className="resume-section-title">Experience</div>
+                <div className="resume-preview">
+{`Senior Frontend Engineer — Acme Corp
+• Led migration from legacy jQuery to React, reducing bundle size by 60% and improving Lighthouse score from 42 to 96.
+• Built component library adopted by 12 product teams, cutting feature delivery time by ~3 weeks per sprint.
+• Mentored 4 junior engineers through structured pair-programming and code review rituals.`}
+                </div>
+              </div>
+              <div>
+                <div className="resume-section-title">Skills</div>
+                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                  {['React', 'TypeScript', 'Next.js', 'Design Systems', 'Performance'].map(s => (
+                    <span key={s} style={{ fontSize: 12, background: 'var(--accent-light)', color: 'var(--accent)', padding: '4px 10px', borderRadius: 6, fontWeight: 500 }}>{s}</span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="card-body" style={{ textAlign: 'center', padding: '40px 0' }}>
+              Add your background to see a stronger framing.
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const DiscoverScreen = ({ onApply }) => {
+  const [filter, setFilter] = useState('all');
+  const jobs = filter === 'all' ? MOCK_JOBS : MOCK_JOBS.filter(j => j.transparency >= 85);
+
+  return (
+    <div>
+      <div className="main-header">
+        <div>
+          <div className="page-title">Discover</div>
+          <div className="page-subtitle">Worth-your-time roles, scored for transparency and response rate.</div>
+        </div>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button className={`btn-secondary ${filter === 'all' ? 'active' : ''}`} onClick={() => setFilter('all')}>All</button>
+          <button className={`btn-secondary ${filter === 'quality' ? 'active' : ''}`} onClick={() => setFilter('quality')}>High Quality</button>
+        </div>
+      </div>
+
+      <div className="job-grid">
+        {jobs.map(job => (
+          <div key={job.id} className="job-card">
+            <div className="job-header">
+              <div>
+                <div className="job-title">{job.title}</div>
+                <div className="job-company">{job.company} · {job.location}</div>
+              </div>
+            </div>
+            <div className="job-meta">
+              <span className="job-tag">{job.salary}</span>
+              {job.tags.map(t => <span key={t} className="job-tag">{t}</span>)}
+            </div>
+            <div className="job-scores">
+              <div className="job-score">
+                <div className={`job-score-num ${job.transparency >= 80 ? 'good' : 'warning'}`}>{job.transparency}</div>
+                <div className="job-score-label">Transparency</div>
+              </div>
+              <div className="job-score">
+                <div className={`job-score-num ${job.response >= 60 ? 'good' : 'warning'}`}>{job.response}%</div>
+                <div className="job-score-label">Response</div>
+              </div>
+              <div className="job-score">
+                <div className="job-score-num good">{job.fit}</div>
+                <div className="job-score-label">Fit</div>
+              </div>
+            </div>
+            <div className="job-actions">
+              <button className="btn-primary" onClick={() => onApply(job)}>Apply</button>
+              <button className="btn-secondary">Save</button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const TrackerScreen = ({ applications, onMove }) => {
+  return (
+    <div>
+      <div className="main-header">
+        <div>
+          <div className="page-title">Tracker</div>
+          <div className="page-subtitle">Quietly track where things stand. No pressure.</div>
+        </div>
+      </div>
+
+      <div className="tracker-board">
+        {STAGES.map(stage => (
+          <div key={stage} className="tracker-column">
+            <div className="tracker-header">
+              <span className="tracker-name">{STAGE_NAMES[stage]}</span>
+              <span className="tracker-count">{applications.filter(a => a.stage === stage).length}</span>
+            </div>
+            {applications.filter(a => a.stage === stage).map(app => (
+              <div key={app.id} className="tracker-card">
+                <div className="tracker-card-title">{app.title}</div>
+                <div className="tracker-card-co">{app.company}</div>
+                <div className="tracker-card-actions">
+                  {stage !== 'applied' && <button className="tracker-btn" onClick={() => onMove(app.id, STAGES[STAGES.indexOf(stage) - 1])}>← Back</button>}
+                  {stage !== 'offer' && <button className="tracker-btn" onClick={() => onMove(app.id, STAGES[STAGES.indexOf(stage) + 1])}>Next →</button>}
+                </div>
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const App = () => {
+  const [screen, setScreen] = useState('resume');
+  const [applications, setApplications] = useState(INITIAL_APPS);
+
+  const handleApply = (job) => {
+    if (!applications.find(a => a.title === job.title && a.company === job.company)) {
+      setApplications([...applications, { id: Date.now(), title: job.title, company: job.company, stage: 'applied' }]);
+    }
+    setScreen('tracker');
+  };
+
+  const handleMove = (id, newStage) => {
+    setApplications(apps => apps.map(a => a.id === id ? { ...a, stage: newStage } : a));
+  };
+
+  const currentMilestone = applications.some(a => a.stage === 'interview' || a.stage === 'offer') ? 3 : applications.length > 0 ? 2 : 1;
+
+  return (
+    <div className="app" data-od-id="fairshot-app">
+      <aside className="sidebar">
+        <a href="index.html" className="sidebar-logo">Fair<span>shot</span></a>
+        <div className="sidebar-sub">Job Search Tool</div>
+        <nav>
+          <button className={`nav-item ${screen === 'resume' ? 'active' : ''}`} onClick={() => setScreen('resume')}>
+            <svg className="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            Resume
+          </button>
+          <button className={`nav-item ${screen === 'discover' ? 'active' : ''}`} onClick={() => setScreen('discover')}>
+            <svg className="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Discover
+          </button>
+          <button className={`nav-item ${screen === 'tracker' ? 'active' : ''}`} onClick={() => setScreen('tracker')}>
+            <svg className="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            Tracker
+            {applications.length > 0 && (
+              <span style={{ marginLeft: 'auto', fontSize: 11, background: 'var(--accent)', color: 'white', padding: '2px 6px', borderRadius: 10 }}>{applications.length}</span>
+            )}
+          </button>
+        </nav>
+      </aside>
+
+      <main className="main">
+        <div className="milestone-bar">
+          <div className="milestone-step">
+            <div className={`milestone-badge ${currentMilestone >= 1 ? 'done' : 'locked'}`}>✓</div>
+            <div className="milestone-info">
+              <div className="milestone-name">Build</div>
+              <div className="milestone-price">$29</div>
+            </div>
+          </div>
+          <div className="milestone-step">
+            <div className={`milestone-badge ${currentMilestone > 2 ? 'done' : currentMilestone === 2 ? 'current' : 'locked'}`}>
+              {currentMilestone > 2 ? '✓' : '2'}
+            </div>
+            <div className="milestone-info">
+              <div className="milestone-name">Apply</div>
+              <div className="milestone-price">$49 / 50 apps</div>
+            </div>
+          </div>
+          <div className="milestone-step">
+            <div className={`milestone-badge ${currentMilestone >= 3 ? 'current' : 'locked'}`}>
+              {currentMilestone >= 3 ? '★' : '3'}
+            </div>
+            <div className="milestone-info">
+              <div className="milestone-name">Interview</div>
+              <div className="milestone-price">$99 · Unlocks</div>
+            </div>
+          </div>
+        </div>
+
+        {screen === 'resume' && <ResumeScreen />}
+        {screen === 'discover' && <DiscoverScreen onApply={handleApply} />}
+        {screen === 'tracker' && <TrackerScreen applications={applications} onMove={handleMove} />}
+      </main>
+    </div>
+  );
+};
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+</script>
+</body>
+</html>
