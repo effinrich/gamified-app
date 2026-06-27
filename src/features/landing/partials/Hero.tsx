@@ -1,9 +1,13 @@
 import { css } from 'styled-system/css'
+import { Button } from '~/components/ui/button'
+import { Eyebrow } from '~/components/ui/text'
 
 export function Hero() {
   return (
     <section className={styles.root} id="top">
-      <div className={styles.eyebrow}>A Soft Tooling product</div>
+      <Eyebrow style={{ display: 'block', marginBottom: '32px' }}>
+        A Soft Tooling product
+      </Eyebrow>
       <h1 className={styles.title}>
         We run your job search. <em className={styles.titleEm}>You pay when it works.</em>
       </h1>
@@ -16,9 +20,9 @@ export function Hero() {
         you get results.
       </p>
       <div className={styles.ctaRow}>
-        <a href="#waitlist" className={styles.ctaPrimary}>
-          Get early access
-        </a>
+        <Button asChild variant="solid" size="lg">
+          <a href="#waitlist">Get early access</a>
+        </Button>
         <a href="#how" className={styles.ctaSecondary}>
           See how it works →
         </a>
@@ -38,14 +42,6 @@ const styles = {
     margin: '0 auto',
     position: 'relative',
     textAlign: 'center',
-  }),
-  eyebrow: css({
-    fontFamily: 'mono',
-    fontSize: '11px',
-    textTransform: 'uppercase',
-    letterSpacing: '0.14em',
-    color: 'accent.solid',
-    marginBottom: '32px',
   }),
   title: css({
     fontFamily: 'display',
@@ -83,24 +79,6 @@ const styles = {
     gap: '16px',
     alignItems: 'center',
     justifyContent: 'center',
-  }),
-  ctaPrimary: css({
-    padding: '16px 32px',
-    borderRadius: '10px',
-    border: 'none',
-    backgroundColor: 'accent.solid',
-    color: 'white',
-    fontFamily: 'body',
-    fontSize: '15px',
-    fontWeight: 600,
-    cursor: 'pointer',
-    transition: 'all 200ms',
-    textDecoration: 'none',
-    display: 'inline-block',
-    _hover: {
-      transform: 'translateY(-1px)',
-      filter: 'brightness(1.08)',
-    },
   }),
   ctaSecondary: css({
     fontSize: '15px',

@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { css } from 'styled-system/css'
 import { Button } from '~/components/ui/button'
 import { Input } from '~/components/ui/input'
+import { Heading } from '~/components/ui/heading'
+import { Eyebrow, Text } from '~/components/ui/text'
 
 export function WaitlistCta() {
   const [joined, setJoined] = useState(false)
@@ -9,15 +11,20 @@ export function WaitlistCta() {
   return (
     <section className={styles.root} id="waitlist">
       <div className={styles.inner}>
-        <h2 className={styles.title}>Ready to stop job-searching alone?</h2>
-        <p className={styles.body}>
-          We're building Fairshot for people who are tired of tools that make them
-          feel inadequate. Get early access and help shape what comes next.
-        </p>
+        <Eyebrow style={{ display: 'block', marginBottom: '20px' }}>
+          Early access
+        </Eyebrow>
+        <Heading as="h2" className={styles.title}>
+          Ready to stop job-searching alone?
+        </Heading>
+        <Text variant="muted" className={styles.body}>
+          We're building Fairshot for people who are tired of tools that make
+          them feel inadequate. Get early access and help shape what comes next.
+        </Text>
         {joined ? (
-          <p className={styles.note}>
+          <Text variant="muted" className={styles.note}>
             Thanks — you're on the list. We'll be in touch.
-          </p>
+          </Text>
         ) : (
           <form
             className={styles.form}
@@ -67,7 +74,6 @@ const styles = {
   body: css({
     fontSize: '17px',
     lineHeight: '1.7',
-    color: 'fg.muted',
     marginBottom: '36px',
   }),
   form: css({

@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import { css, cx } from 'styled-system/css'
+import { HStack } from '~/components/ui/layout'
 
 export function LandingNav({ scrolled }: { scrolled: boolean }) {
   return (
@@ -7,7 +8,7 @@ export function LandingNav({ scrolled }: { scrolled: boolean }) {
       <a href="#top" className={styles.logo}>
         Fair<span className={styles.logoAccent}>shot</span>
       </a>
-      <div className={styles.links}>
+      <HStack gap="8" className={styles.links}>
         <a href="#problem" className={styles.link}>
           The Problem
         </a>
@@ -20,7 +21,7 @@ export function LandingNav({ scrolled }: { scrolled: boolean }) {
         <Link to="/app" className={styles.cta}>
           Open App
         </Link>
-      </div>
+      </HStack>
     </nav>
   )
 }
@@ -53,8 +54,8 @@ const styles = {
   }),
   logoAccent: css({ color: 'accent.solid' }),
   links: css({
-    display: 'flex',
-    gap: '32px',
+    // HStack controls gap; keep the inline-flex + center from the original.
+    display: 'inline-flex',
     alignItems: 'center',
   }),
   link: css({

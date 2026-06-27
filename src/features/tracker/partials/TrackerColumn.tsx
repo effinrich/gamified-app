@@ -3,7 +3,7 @@ import type { Application, Stage } from '~/shared/jobs'
 import { adjacentStage } from '../utils'
 import { TrackerCard } from './TrackerCard'
 import { Badge } from '~/components/ui/badge'
-import { HStack } from '~/components/ui/layout'
+import { Card } from '~/components/ui/card'
 
 interface TrackerColumnProps {
   stage: Stage
@@ -12,12 +12,8 @@ interface TrackerColumnProps {
   onMove: (id: number, stage: Stage) => void
 }
 
-const columnStyles = {
+const styles = {
   root: css({
-    backgroundColor: 'bg.panel',
-    borderWidth: '1px',
-    borderColor: 'border.default',
-    borderRadius: '14px',
     padding: '20px',
     minHeight: '400px',
     display: 'flex',
@@ -49,6 +45,7 @@ const columnStyles = {
     fontFamily: 'display',
     opacity: 0.7,
     lineHeight: '1.5',
+    whiteSpace: 'pre-line',
   }),
 }
 
@@ -64,17 +61,15 @@ export function TrackerColumn({ stage, name, cards, onMove }: TrackerColumnProps
   const nextStage = adjacentStage(stage, 1)
 
   return (
-    <div className={columnStyles.root}>
-      <div className={columnStyles.header}>
-        <span className={columnStyles.name}>{name}</span>
+    <Card className={styles.root}>
+      <div className={styles.header}>
+        <span className={styles.name}>{name}</span>
         <Badge variant="subtle" size="sm">
           {cards.length}
         </Badge>
       </div>
       {cards.length === 0 ? (
-        <div className={columnStyles.empty} style={{ whiteSpace: 'pre-line' }}>
-          {EMPTY_COPY[stage]}
-        </div>
+        <div className={styles.empty}>{EMPTY_COPY[stage]}</div>
       ) : (
         cards.map((app) => (
           <TrackerCard
@@ -86,6 +81,6 @@ export function TrackerColumn({ stage, name, cards, onMove }: TrackerColumnProps
           />
         ))
       )}
-    </div>
+    </Card>
   )
 }

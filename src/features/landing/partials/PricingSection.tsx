@@ -1,6 +1,8 @@
 import { css, cx } from 'styled-system/css'
 import type { PricingTier } from '../types'
 import { Section } from '~/components/ui/section'
+import { Card } from '~/components/ui/card'
+import { Stack } from '~/components/ui/layout'
 
 export function PricingSection({ tiers }: { tiers: PricingTier[] }) {
   return (
@@ -17,22 +19,24 @@ export function PricingSection({ tiers }: { tiers: PricingTier[] }) {
 
       <div className={styles.grid}>
         {tiers.map((tier) => (
-          <div
+          <Card
             className={cx(styles.card, tier.featured && styles.featured)}
             key={tier.label}
           >
             {tier.featured && <div className={styles.accentBar} aria-hidden />}
-            <div className={styles.label}>{tier.label}</div>
-            <div className={styles.price}>
-              {tier.price.amount}
-              {tier.price.unit && (
-                <span className={styles.priceUnit}>{tier.price.unit}</span>
-              )}
-            </div>
-            <div className={styles.name}>{tier.name}</div>
-            <div className={styles.desc}>{tier.desc}</div>
-            <div className={styles.meta}>{tier.meta}</div>
-          </div>
+            <Stack gap="3">
+              <div className={styles.label}>{tier.label}</div>
+              <div className={styles.price}>
+                {tier.price.amount}
+                {tier.price.unit && (
+                  <span className={styles.priceUnit}>{tier.price.unit}</span>
+                )}
+              </div>
+              <div className={styles.name}>{tier.name}</div>
+              <div className={styles.desc}>{tier.desc}</div>
+              <div className={styles.meta}>{tier.meta}</div>
+            </Stack>
+          </Card>
         ))}
       </div>
     </Section>
@@ -47,10 +51,6 @@ const styles = {
     marginTop: '56px',
   }),
   card: css({
-    backgroundColor: 'bg.panel',
-    borderWidth: '1px',
-    borderColor: 'border.default',
-    borderRadius: '16px',
     padding: '36px 32px',
     transition: 'all 300ms ease',
     position: 'relative',
@@ -74,14 +74,12 @@ const styles = {
     textTransform: 'uppercase',
     letterSpacing: '0.12em',
     color: 'fg.muted',
-    marginBottom: '16px',
   }),
   price: css({
     fontFamily: 'display',
     fontSize: '40px',
     fontWeight: 600,
     letterSpacing: '-0.02em',
-    marginBottom: '8px',
   }),
   priceUnit: css({
     fontSize: '16px',
@@ -91,13 +89,11 @@ const styles = {
   name: css({
     fontSize: '17px',
     fontWeight: 600,
-    marginBottom: '16px',
   }),
   desc: css({
     fontSize: '14px',
     lineHeight: '1.6',
     color: 'fg.muted',
-    marginBottom: '24px',
   }),
   meta: css({
     fontFamily: 'mono',

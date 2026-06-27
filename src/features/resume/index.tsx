@@ -9,11 +9,12 @@ import type { Resume } from './types'
 import { Button } from '~/components/ui/button'
 import { Card } from '~/components/ui/card'
 import { HStack, Stack } from '~/components/ui/layout'
-import { Textarea } from '~/components/ui/input'
-import { Eyebrow, Heading, Text } from '~/components/ui/text'
+import { Textarea } from '~/components/ui/textarea'
+import { Eyebrow, Text } from '~/components/ui/text'
 import { ResumePreview } from './partials/ResumePreview'
 import { Scorecard } from './partials/Scorecard'
 import { LinkedInPrompt } from './partials/LinkedInPrompt'
+import { Heading } from '~/components/ui/heading'
 
 const pageStyles = {
   fadeIn: css({ animation: 'fadeIn 450ms ease both' }),
@@ -142,10 +143,10 @@ export function ResumePage() {
       <div className={pageStyles.header}>
         <div className={pageStyles.headerCopy}>
           <Eyebrow>Optimize · Milestone 01</Eyebrow>
-          <Heading as="h1" size="xl">
+          <Heading as="h1" textStyle="heading-xl">
             Your resume, in a form ATS will actually read.
           </Heading>
-          <Text muted style={{ marginTop: '8px', maxWidth: '60ch' }}>
+          <Text variant="muted" style={{ marginTop: '8px', maxWidth: '60ch' }}>
             Paste your background or a LinkedIn URL. We'll reframe the bullets
             for clean parsing and hand you a DOCX and PDF that travel through
             Workday, Greenhouse, and iCIMS without losing your story.

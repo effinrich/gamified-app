@@ -198,7 +198,7 @@ export function ResumePreview({ resume, onChange }: ResumePreviewProps) {
       <Eyebrow style={{ marginTop: '20px', marginBottom: '4px' }}>
         Source of truth
       </Eyebrow>
-      <Text muted style={{ fontSize: '12px' }}>
+      <Text variant="muted" style={{ fontSize: '12px' }}>
         This preview is what the DOCX and PDF render. We don't change your
         words after you do.
       </Text>

@@ -1,8 +1,10 @@
+import type { ChangeEvent } from 'react'
 import { css } from 'styled-system/css'
 import { Card } from '~/components/ui/card'
-import { Textarea } from '~/components/ui/input'
+import { Heading } from '~/components/ui/heading'
 import { Stack } from '~/components/ui/layout'
-import { Heading, Text } from '~/components/ui/text'
+import { Text } from '~/components/ui/text'
+import { Textarea } from '~/components/ui/textarea'
 
 const inputStyles = {
   hint: css({
@@ -26,14 +28,14 @@ export function BackgroundInput({ value, onChange }: BackgroundInputProps) {
         <Card.Title>Paste your background</Card.Title>
       </Card.Header>
       <Stack gap="3">
-        <Text muted>
+        <Text variant="muted">
           Drop a LinkedIn URL or paste your experience raw. We never score you down —
           we just find stronger framings.
         </Text>
         <Textarea
           placeholder="e.g. Senior Frontend Engineer at Acme Corp. Built design system used by 12 teams..."
           value={value}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={(e: ChangeEvent<HTMLTextAreaElement>) => onChange(e.target.value)}
           rows={10}
           style={{ minHeight: '200px', resize: 'vertical', lineHeight: '1.6' }}
         />

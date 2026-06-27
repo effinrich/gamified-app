@@ -7,7 +7,8 @@ import type { JobFilter } from './types'
 import { filterJobs } from './utils'
 import { DiscoverFilters } from './partials/DiscoverFilters'
 import { JobCard } from './partials/JobCard'
-import { Heading, Text } from '~/components/ui/text'
+import { Heading } from '~/components/ui/heading'
+import { Text } from '~/components/ui/text'
 
 const pageStyles = {
   grid: css({
@@ -44,8 +45,8 @@ export function DiscoverPage() {
     <div className={pageStyles.fadeIn}>
       <div className={pageStyles.header}>
         <div>
-          <Heading as="h1" size="lg">Discover</Heading>
-          <Text muted style={{ marginTop: '4px' }}>
+          <Heading as="h1" textStyle="xl">Discover</Heading>
+          <Text variant="muted" style={{ marginTop: '4px' }}>
             Worth-your-time roles, scored for transparency and response rate.
           </Text>
         </div>

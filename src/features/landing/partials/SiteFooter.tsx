@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import { css } from 'styled-system/css'
+import { HStack } from '~/components/ui/layout'
 
 export function SiteFooter() {
   return (
@@ -12,7 +13,7 @@ export function SiteFooter() {
           A Soft Tooling product. Built for humans, not robots.
         </div>
       </div>
-      <div className={styles.links}>
+      <HStack gap="6" className={styles.links}>
         <Link to="/app" className={styles.link}>
           Open App
         </Link>
@@ -22,7 +23,7 @@ export function SiteFooter() {
         <a href="#waitlist" className={styles.link}>
           Waitlist
         </a>
-      </div>
+      </HStack>
     </footer>
   )
 }
@@ -50,8 +51,8 @@ const styles = {
     lineHeight: '1.6',
   }),
   links: css({
-    display: 'flex',
-    gap: '24px',
+    // HStack handles the horizontal flex; keep default center alignment.
+    display: 'inline-flex',
   }),
   link: css({
     fontSize: '13px',

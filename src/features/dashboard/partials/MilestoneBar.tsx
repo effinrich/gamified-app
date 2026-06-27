@@ -1,14 +1,10 @@
 import { css, cx } from 'styled-system/css'
 import type { MilestoneStatus, MilestoneView } from '../types'
+import { Card } from '~/components/ui/card'
+import { HStack } from '~/components/ui/layout'
 
-const barStyles = {
+const styles = {
   root: css({
-    display: 'flex',
-    alignItems: 'stretch',
-    backgroundColor: 'bg.panel',
-    borderWidth: '1px',
-    borderColor: 'border.default',
-    borderRadius: '12px',
     padding: '16px 8px',
     marginBottom: '28px',
   }),
@@ -70,17 +66,19 @@ const barStyles = {
 
 export function MilestoneBar({ steps }: { steps: MilestoneView[] }) {
   return (
-    <div className={barStyles.root}>
-      {steps.map((s, i) => (
-        <div className={barStyles.step} key={s.step}>
-          {i < steps.length - 1 && <div className={barStyles.stepDivider} aria-hidden />}
-          <div className={barStyles.badge(s.status)}>{s.symbol}</div>
-          <div className={barStyles.info}>
-            <div className={barStyles.name}>{s.name}</div>
-            <div className={barStyles.price}>{s.price}</div>
+    <Card className={styles.root}>
+      <HStack gap="1" align="stretch">
+        {steps.map((s, i) => (
+          <div className={styles.step} key={s.step}>
+            {i < steps.length - 1 && <div className={styles.stepDivider} aria-hidden />}
+            <div className={cx(styles.badge(s.status))}>{s.symbol}</div>
+            <div className={styles.info}>
+              <div className={styles.name}>{s.name}</div>
+              <div className={styles.price}>{s.price}</div>
+            </div>
           </div>
-        </div>
-      ))}
-    </div>
+        ))}
+      </HStack>
+    </Card>
   )
 }

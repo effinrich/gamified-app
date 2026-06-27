@@ -1,13 +1,10 @@
 import { css } from 'styled-system/css'
+import { Card } from '~/components/ui/card'
 import { Text } from '~/components/ui/text'
 import { Stack } from '~/components/ui/layout'
 
 const styles = {
   prompt: css({
-    backgroundColor: 'bg.surface',
-    borderWidth: '1px',
-    borderColor: 'border.subtle',
-    borderRadius: '8px',
     padding: '20px',
     marginTop: '12px',
   }),
@@ -34,7 +31,7 @@ const styles = {
  */
 export function LinkedInPrompt({ url }: { url: string }) {
   return (
-    <div className={styles.prompt}>
+    <Card variant="subtle" className={styles.prompt}>
       <div className={styles.url}>{url}</div>
       <Text style={{ fontSize: '13px', marginBottom: '12px' }}>
         We can't fetch LinkedIn from the browser — they block it on purpose.
@@ -52,6 +49,6 @@ export function LinkedInPrompt({ url }: { url: string }) {
           </li>
         </ol>
       </Stack>
-    </div>
+    </Card>
   )
 }

@@ -1,6 +1,7 @@
 import { css } from 'styled-system/css'
 import type { Application, Stage } from '~/shared/jobs'
 import { Button } from '~/components/ui/button'
+import { Card } from '~/components/ui/card'
 import { HStack, Stack } from '~/components/ui/layout'
 
 interface TrackerCardProps {
@@ -10,12 +11,8 @@ interface TrackerCardProps {
   onMove: (id: number, stage: Stage) => void
 }
 
-const cardStyles = {
+const styles = {
   root: css({
-    backgroundColor: 'bg.surface',
-    borderWidth: '1px',
-    borderColor: 'border.default',
-    borderRadius: '10px',
     padding: '14px',
     marginBottom: '10px',
     transition: 'all 0.2s',
@@ -40,10 +37,10 @@ export function TrackerCard({
   onMove,
 }: TrackerCardProps) {
   return (
-    <div className={cardStyles.root}>
+    <Card variant="subtle" className={styles.root}>
       <Stack gap="1">
-        <div className={cardStyles.title}>{application.title}</div>
-        <div className={cardStyles.co}>{application.company}</div>
+        <div className={styles.title}>{application.title}</div>
+        <div className={styles.co}>{application.company}</div>
       </Stack>
       {(prevStage || nextStage) && (
         <HStack gap="2" style={{ marginTop: '10px' }}>
@@ -67,6 +64,6 @@ export function TrackerCard({
           )}
         </HStack>
       )}
-    </div>
+    </Card>
   )
 }

@@ -28,7 +28,7 @@ export default defineConfig({
   preflight: true,
   include: ["./src/**/*.{js,jsx,ts,tsx}", "./pages/**/*.{js,jsx,ts,tsx}"],
   exclude: [],
-
+  jsxFramework: 'react',
   presets: [
     "@pandacss/preset-base",
     createPreset({

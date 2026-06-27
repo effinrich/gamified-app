@@ -3,7 +3,8 @@ import { STAGES, STAGE_NAMES } from '~/shared/jobs'
 import { useApplications } from '~/lib/applications'
 import { applicationsInStage } from './utils'
 import { TrackerColumn } from './partials/TrackerColumn'
-import { Heading, Text } from '~/components/ui/text'
+import { Heading } from '~/components/ui/heading'
+import { Text } from '~/components/ui/text'
 
 const pageStyles = {
   fadeIn: css({
@@ -31,8 +32,8 @@ export function TrackerPage() {
     <div className={pageStyles.fadeIn}>
       <div className={pageStyles.header}>
         <div>
-          <Heading as="h1" size="lg">Tracker</Heading>
-          <Text muted style={{ marginTop: '4px' }}>
+          <Heading as="h1" textStyle="xl">Tracker</Heading>
+          <Text variant="muted" style={{ marginTop: '4px' }}>
             Quietly track where things stand. No pressure.
           </Text>
         </div>

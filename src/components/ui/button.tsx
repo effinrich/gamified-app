@@ -1,29 +1,81 @@
-import { forwardRef, type ButtonHTMLAttributes } from "react"
-import { css, cx } from "styled-system/css"
-import { button, type ButtonVariantProps } from "styled-system/recipes"
 
-/**
- * Button — Fairshot's primary action primitive.
- *
- * Styled with the Park UI Panda recipe (variants: solid | outline | ghost | link | subtle;
- * sizes: xs | sm | md | lg | xl | 2xl). Defaults to `type="button"` so it never accidentally
- * submits a surrounding form. Pass `type="submit"` explicitly when wrapping in a `<form>`.
- *
- * The legacy `styles.css` button pile (btn-primary, hero-cta-primary, nav-cta, email-submit,
- * tracker-btn) is replaced by this single component with size/variant props.
- */
-export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
-  ButtonVariantProps
+import { ark } from '@ark-ui/react/factory'
+import { createContext, mergeProps } from '@ark-ui/react/utils'
+import { type ComponentProps, forwardRef, useMemo } from 'react'
+import { styled } from 'styled-system/jsx'
+import { type ButtonVariantProps, button } from 'styled-system/recipes'
+import { Group, type GroupProps } from './group'
+import { Loader } from './loader'
 
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  function Button({ className, type = "button", variant, size, ...rest }, ref) {
+interface ButtonLoadingProps {
+  /**
+   * If `true`, the button will show a loading spinner.
+   * @default false
+   */
+  loading?: boolean | undefined
+  /**
+   * The text to show while loading.
+   */
+  loadingText?: React.ReactNode | undefined
+  /**
+   * The spinner to show while loading.
+   */
+  spinner?: React.ReactNode | undefined
+  /**
+   * The placement of the spinner
+   * @default "start"
+   */
+  spinnerPlacement?: 'start' | 'end' | undefined
+}
+
+type BaseButtonProps = ComponentProps<typeof BaseButton>
+const BaseButton = styled(ark.button, button)
+
+export interface ButtonProps extends BaseButtonProps, ButtonLoadingProps {}
+
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(props, ref) {
+  const propsContext = useButtonPropsContext()
+  const buttonProps = useMemo(
+    () => mergeProps<ButtonProps>(propsContext, props),
+    [propsContext, props],
+  )
+
+  const { loading, loadingText, children, spinner, spinnerPlacement, ...rest } = buttonProps
+  return (
+    <BaseButton
+      type="button"
+      ref={ref}
+      {...rest}
+      data-loading={loading ? '' : undefined}
+      disabled={loading || rest.disabled}
+    >
+      {!props.asChild && loading ? (
+        <Loader spinner={spinner} text={loadingText} spinnerPlacement={spinnerPlacement}>
+          {children}
+        </Loader>
+      ) : (
+        children
+      )}
+    </BaseButton>
+  )
+})
+
+export interface ButtonGroupProps extends GroupProps, ButtonVariantProps {}
+
+export const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(
+  function ButtonGroup(props, ref) {
+    const [variantProps, otherProps] = useMemo(() => button.splitVariantProps(props), [props])
     return (
-      <button
-        ref={ref}
-        type={type}
-        className={cx(button({ variant, size }), css({ cursor: "pointer" }), className)}
-        {...rest}
-      />
+      <ButtonPropsProvider value={variantProps}>
+        <Group ref={ref} {...otherProps} />
+      </ButtonPropsProvider>
     )
   },
 )
+
+const [ButtonPropsProvider, useButtonPropsContext] = createContext<ButtonVariantProps>({
+  name: 'ButtonPropsContext',
+  hookName: 'useButtonPropsContext',
+  providerName: '<PropsProvider />',
+  strict: false,
+})

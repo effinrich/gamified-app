@@ -1,6 +1,8 @@
 import { css } from 'styled-system/css'
 import type { Problem } from '../types'
 import { Section } from '~/components/ui/section'
+import { Card } from '~/components/ui/card'
+import { Stack } from '~/components/ui/layout'
 
 export function ProblemSection({ problems }: { problems: Problem[] }) {
   return (
@@ -22,13 +24,15 @@ export function ProblemSection({ problems }: { problems: Problem[] }) {
 
       <div className={styles.grid}>
         {problems.map((p) => (
-          <div className={styles.card} key={p.title}>
-            <div className={styles.icon} aria-hidden>
-              {p.icon}
-            </div>
-            <div className={styles.cardTitle}>{p.title}</div>
-            <div className={styles.cardDesc}>{p.desc}</div>
-          </div>
+          <Card className={styles.card} key={p.title}>
+            <Stack gap="3">
+              <div className={styles.icon} aria-hidden>
+                {p.icon}
+              </div>
+              <div className={styles.cardTitle}>{p.title}</div>
+              <div className={styles.cardDesc}>{p.desc}</div>
+            </Stack>
+          </Card>
         ))}
       </div>
     </Section>
@@ -43,10 +47,6 @@ const styles = {
     marginTop: '56px',
   }),
   card: css({
-    backgroundColor: 'bg.panel',
-    borderWidth: '1px',
-    borderColor: 'border.default',
-    borderRadius: '16px',
     padding: '32px',
     transition: 'all 300ms ease',
     _hover: { borderColor: 'border.strong' },
@@ -59,14 +59,12 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: '20px',
     fontSize: '18px',
   }),
   cardTitle: css({
     fontFamily: 'display',
     fontSize: '20px',
     fontWeight: 600,
-    marginBottom: '10px',
     letterSpacing: '-0.01em',
   }),
   cardDesc: css({

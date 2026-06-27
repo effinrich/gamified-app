@@ -1,6 +1,7 @@
 import { css } from 'styled-system/css'
 import type { PhilosophyPair } from '../types'
 import { Section } from '~/components/ui/section'
+import { Stack } from '~/components/ui/layout'
 
 export function PhilosophySection({ pairs }: { pairs: PhilosophyPair[] }) {
   return (
@@ -16,10 +17,10 @@ export function PhilosophySection({ pairs }: { pairs: PhilosophyPair[] }) {
 
       <div className={styles.grid}>
         {pairs.map((pair, i) => (
-          <div className={styles.item} key={`${pair.q}-${i}`}>
+          <Stack className={styles.item} gap="3" key={`${pair.q}-${i}`}>
             <div className={styles.q}>{pair.q}</div>
             <div className={styles.a}>{pair.a}</div>
-          </div>
+          </Stack>
         ))}
       </div>
     </Section>
@@ -45,7 +46,6 @@ const styles = {
     textTransform: 'uppercase',
     letterSpacing: '0.1em',
     color: 'accent.solid',
-    marginBottom: '10px',
   }),
   a: css({
     fontFamily: 'display',

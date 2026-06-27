@@ -1,6 +1,8 @@
 import { css } from 'styled-system/css'
 import type { Step } from '../types'
 import { Section } from '~/components/ui/section'
+import { Badge } from '~/components/ui/badge'
+import { Stack } from '~/components/ui/layout'
 
 export function HowItWorks({ steps }: { steps: Step[] }) {
   return (
@@ -17,11 +19,13 @@ export function HowItWorks({ steps }: { steps: Step[] }) {
 
       <div className={styles.grid}>
         {steps.map((s) => (
-          <div className={styles.step} key={s.num}>
-            <div className={styles.stepNum}>{s.num}</div>
+          <Stack className={styles.step} gap="3" key={s.num}>
+            <Badge variant="surface" size="lg" className={styles.stepNum}>
+              {s.num}
+            </Badge>
             <div className={styles.stepTitle}>{s.title}</div>
             <div className={styles.stepDesc}>{s.desc}</div>
-          </div>
+          </Stack>
         ))}
       </div>
     </Section>
@@ -40,18 +44,14 @@ const styles = {
     textAlign: 'center',
     position: 'relative',
     zIndex: 1,
+    alignItems: 'center',
   }),
   stepNum: css({
     width: '56px',
     height: '56px',
     borderRadius: '9999px',
-    backgroundColor: 'bg.panel',
     borderWidth: '1px',
     borderColor: 'border.default',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    margin: '0 auto 20px',
     fontFamily: 'mono',
     fontSize: '14px',
     fontWeight: 500,
@@ -61,7 +61,6 @@ const styles = {
     fontFamily: 'display',
     fontSize: '18px',
     fontWeight: 600,
-    marginBottom: '8px',
   }),
   stepDesc: css({
     fontSize: '14px',
