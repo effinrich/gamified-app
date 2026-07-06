@@ -5,9 +5,8 @@ import { HStack } from '~/components/ui/layout'
 /**
  * SiteFooter — the magazine's colophon.
  *
- * Closes the editorial narrative started by the Hero's `Issue № 01` masthead
- * and capped by WaitlistCta's `Final · 03` spread. Reads as a small back-page
- * block: mono "Colophon" eyebrow with a hairline + dateline, an oversized
+ * Closes the editorial narrative started by the Hero's `Issue № 01` masthead.
+ * Reads as a small back-page block: mono "Colophon" eyebrow with a hairline + dateline, an oversized
  * logotype on the left against a tight credits/links column on the right,
  * and a fineprint meta strip on a bottom hairline.
  */
@@ -30,7 +29,7 @@ export function SiteFooter() {
           WaitlistCta's compositional language so the closing section reads
           as part of the same magazine. */}
       <div className={styles.layout}>
-        <div className={styles.gutter} aria-hidden>
+        <div className={styles.gutter}>
           <span className={styles.gutterLabel}>Credits</span>
           <span className={styles.gutterLabel}>&amp; Index</span>
           <span className={styles.gutterMeta}>№ 04</span>
