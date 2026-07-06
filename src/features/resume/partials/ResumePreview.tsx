@@ -1,91 +1,359 @@
 import { useState } from 'react'
 import { css } from 'styled-system/css'
 import type { Resume, ExperienceEntry, EducationEntry, ContactLine } from '../types'
-import { Card } from '~/components/ui/card'
 import { Button } from '~/components/ui/button'
-import { HStack, Stack } from '~/components/ui/layout'
-import { Eyebrow, Text } from '~/components/ui/text'
 
 const styles = {
-  doc: css({
-    backgroundColor: 'bg.canvas',
-    borderWidth: '1px',
-    borderColor: 'border.subtle',
-    borderRadius: '6px',
-    padding: '32px 36px',
-    fontFamily: 'body',
-    fontSize: '13px',
-    lineHeight: '1.55',
-    color: 'fg.default',
-    // Mimics a printed page on screen.
-    boxShadow: '0 1px 2px rgba(0, 0, 0, 0.04), 0 8px 24px rgba(0, 0, 0, 0.04)',
-    minHeight: '420px',
+  // ── Section header ─────────────────────────────────────────────────
+  header: css({
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+    marginBottom: '14px',
   }),
-  name: css({
-    fontFamily: 'display',
-    fontSize: '22px',
+  eyebrow: css({
+    fontFamily: 'mono',
+    fontSize: '11px',
+    textTransform: 'uppercase',
+    letterSpacing: '0.18em',
+    color: 'accent.solid',
     fontWeight: 600,
-    letterSpacing: '-0.01em',
-    textAlign: 'center',
-    marginBottom: '4px',
   }),
-  contact: css({
-    textAlign: 'center',
-    fontSize: '12px',
+  headerRule: css({
+    flex: 1,
+    height: '1px',
+    backgroundColor: 'border.default',
+  }),
+  caption: css({
+    fontFamily: 'mono',
+    fontSize: '11px',
+    textTransform: 'uppercase',
+    letterSpacing: '0.16em',
     color: 'fg.muted',
-    marginBottom: '20px',
+    marginTop: '8px',
+    marginBottom: '18px',
   }),
-  sectionHeader: css({
+  // ── Toolbar (Add role / Add education) ─────────────────────────────
+  toolbar: css({
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    marginTop: '12px',
+    marginBottom: '20px',
+    flexWrap: 'wrap',
+  }),
+  toolbarRule: css({
+    flex: 1,
+    height: '1px',
+    backgroundColor: 'border.default',
+  }),
+  toolbarLabel: css({
+    fontFamily: 'mono',
+    fontSize: '10px',
+    textTransform: 'uppercase',
+    letterSpacing: '0.16em',
+    color: 'fg.subtle',
+  }),
+  // ── Paper frame ────────────────────────────────────────────────────
+  page: css({
+    backgroundColor: 'bg.surface',
+    borderTopWidth: '1px',
+    borderBottomWidth: '1px',
+    borderColor: 'border.default',
+    borderRadius: 0,
+    padding: { base: '32px 28px', md: '48px 56px' },
+    maxWidth: '720px',
+    margin: '0 auto',
+    animation: 'fadeIn 500ms ease both',
+    animationDelay: '80ms',
+    animationFillMode: 'both',
+    // The user owns the words; keep selectable and copyable like a real page.
+    userSelect: 'text',
+  }),
+  // ── Empty state ────────────────────────────────────────────────────
+  empty: css({
+    borderWidth: '1px',
+    borderStyle: 'dashed',
+    borderColor: 'border.default',
+    padding: '56px 32px',
+    textAlign: 'center',
+    maxWidth: '720px',
+    margin: '0 auto',
+  }),
+  emptyEyebrow: css({
+    fontFamily: 'mono',
+    fontSize: '11px',
+    textTransform: 'uppercase',
+    letterSpacing: '0.18em',
+    color: 'fg.muted',
+    marginBottom: '12px',
+  }),
+  emptyLine: css({
     fontFamily: 'display',
+    fontSize: 'clamp(18px, 2vw, 22px)',
+    fontStyle: 'italic',
+    color: 'fg.default',
+    lineHeight: 1.45,
+  }),
+  // ── Contact block ──────────────────────────────────────────────────
+  contactName: css({
+    fontFamily: 'display',
+    fontSize: 'clamp(28px, 3.2vw, 40px)',
+    fontWeight: 500,
+    letterSpacing: '-0.02em',
+    lineHeight: 1.05,
+    color: 'fg.default',
+    width: '100%',
+    textAlign: 'center',
+    border: 'none',
+    background: 'transparent',
+    outline: 'none',
+    padding: 0,
+    marginBottom: '8px',
+    transition: 'color 200ms ease',
+    _focus: { color: 'accent.solid' },
+    _placeholder: { color: 'fg.subtle', fontStyle: 'italic' },
+  }),
+  contactNameEm: css({
+    fontStyle: 'italic',
+    color: 'accent.solid',
+  }),
+  contactLine: css({
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '10px',
+    flexWrap: 'wrap',
+    marginBottom: '32px',
+    paddingBottom: '20px',
+    borderBottomWidth: '1px',
+    borderColor: 'border.default',
+  }),
+  contactSep: css({
+    fontFamily: 'mono',
+    fontSize: '11px',
+    color: 'fg.subtle',
+  }),
+  contactEditButton: css({
+    fontFamily: 'mono',
+    fontSize: '11px',
+    textTransform: 'uppercase',
+    letterSpacing: '0.16em',
+    color: 'fg.muted',
+    background: 'transparent',
+    border: 'none',
+    padding: 0,
+    cursor: 'text',
+    transition: 'color 200ms ease',
+    _hover: { color: 'fg.default' },
+    _focus: { color: 'accent.solid', outline: 'none' },
+  }),
+  contactEditInput: css({
+    fontFamily: 'mono',
+    fontSize: '11px',
+    textTransform: 'uppercase',
+    letterSpacing: '0.16em',
+    color: 'fg.default',
+    background: 'transparent',
+    border: 'none',
+    borderBottomWidth: '1px',
+    borderColor: 'accent.solid',
+    padding: '0 0 2px',
+    outline: 'none',
+    transition: 'border-color 200ms ease',
+  }),
+  // ── Resume section titles (within the page) ────────────────────────
+  sectionTitle: css({
+    fontFamily: 'mono',
     fontSize: '12px',
     fontWeight: 600,
     textTransform: 'uppercase',
-    letterSpacing: '0.12em',
+    letterSpacing: '0.18em',
     color: 'fg.default',
     borderBottomWidth: '1px',
     borderColor: 'border.default',
-    paddingBottom: '4px',
-    marginTop: '20px',
-    marginBottom: '10px',
+    paddingBottom: '6px',
+    marginTop: '28px',
+    marginBottom: '14px',
   }),
-  summary: css({ marginBottom: '4px' }),
+  sectionTitleFirst: css({
+    marginTop: '8px',
+  }),
+  // ── Summary ────────────────────────────────────────────────────────
+  summaryText: css({
+    fontFamily: 'body',
+    fontSize: '15px',
+    lineHeight: 1.6,
+    color: 'fg.default',
+    width: '100%',
+    background: 'transparent',
+    border: 'none',
+    outline: 'none',
+    padding: 0,
+    resize: 'none',
+    transition: 'color 200ms ease',
+    _focus: { color: 'accent.solid' },
+    _placeholder: { color: 'fg.subtle', fontStyle: 'italic' },
+  }),
+  // ── Experience entry ───────────────────────────────────────────────
+  expBlock: css({
+    marginBottom: '20px',
+  }),
   expHeader: css({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'baseline',
-    gap: '8px',
-    fontWeight: 600,
-    fontFamily: 'display',
-    fontSize: '13px',
-    marginTop: '10px',
-  }),
-  expDate: css({ fontWeight: 400, color: 'fg.muted', fontFamily: 'body' }),
-  expLocation: css({
-    fontStyle: 'italic',
-    fontSize: '12px',
-    color: 'fg.muted',
+    gap: '12px',
     marginBottom: '4px',
   }),
+  expTitle: css({
+    fontFamily: 'display',
+    fontSize: 'clamp(18px, 1.8vw, 24px)',
+    fontWeight: 500,
+    letterSpacing: '-0.01em',
+    lineHeight: 1.25,
+    color: 'fg.default',
+    flex: 1,
+    background: 'transparent',
+    border: 'none',
+    outline: 'none',
+    padding: 0,
+    transition: 'color 200ms ease',
+    _focus: { color: 'accent.solid' },
+    _placeholder: { color: 'fg.subtle', fontStyle: 'italic' },
+  }),
+  removeBtn: css({
+    fontFamily: 'mono',
+    fontSize: '11px',
+    color: 'fg.muted',
+    background: 'transparent',
+    border: 'none',
+    cursor: 'pointer',
+    padding: 0,
+    lineHeight: 1,
+    transition: 'color 200ms ease',
+    _hover: { color: 'accent.solid' },
+    _focus: { color: 'accent.solid', outline: 'none' },
+  }),
+  expMeta: css({
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px',
+    flexWrap: 'wrap',
+    marginBottom: '12px',
+  }),
+  expMetaItem: css({
+    fontFamily: 'mono',
+    fontSize: '11px',
+    textTransform: 'uppercase',
+    letterSpacing: '0.16em',
+    color: 'fg.muted',
+    background: 'transparent',
+    border: 'none',
+    outline: 'none',
+    padding: 0,
+    transition: 'color 200ms ease',
+    _focus: { color: 'accent.solid' },
+    _placeholder: { color: 'fg.subtle', fontStyle: 'italic' },
+  }),
+  expMetaItemSchool: css({
+    marginBottom: '4px',
+  }),
+  expMetaSep: css({
+    fontFamily: 'mono',
+    fontSize: '11px',
+    color: 'fg.subtle',
+  }),
+  // ── Bullets ────────────────────────────────────────────────────────
   bulletList: css({
-    listStylePosition: 'outside',
-    paddingLeft: '18px',
-    marginTop: '4px',
+    listStyle: 'none',
+    padding: 0,
+    margin: 0,
   }),
-  bulletItem: css({ marginBottom: '3px' }),
-  skillsText: css({ fontSize: '13px' }),
-  editInput: css({
-    width: '100%',
+  bulletItem: css({
+    position: 'relative',
+    paddingLeft: '20px',
+    marginBottom: '6px',
+  }),
+  bulletMark: css({
+    position: 'absolute',
+    left: 0,
+    top: '0.45em',
+    width: '8px',
+    height: '1px',
+    backgroundColor: 'fg.muted',
+  }),
+  bulletInput: css({
     fontFamily: 'body',
-    fontSize: '13px',
-    padding: '4px 6px',
-    borderWidth: '1px',
-    borderColor: 'border.subtle',
-    borderRadius: '4px',
-    backgroundColor: 'bg.surface',
+    fontSize: '15px',
+    lineHeight: 1.6,
+    color: 'fg.default',
+    width: '100%',
+    background: 'transparent',
+    border: 'none',
+    outline: 'none',
+    padding: 0,
+    transition: 'color 200ms ease',
+    _focus: { color: 'accent.solid' },
+    _placeholder: { color: 'fg.subtle', fontStyle: 'italic' },
   }),
-  editTitle: css({ width: '100%', fontFamily: 'display', fontSize: '13px', fontWeight: 600 }),
-  editDate: css({ width: '100%', fontFamily: 'body', fontSize: '12px' }),
-  editBullet: css({ width: '100%', fontFamily: 'body', fontSize: '13px' }),
+  addBullet: css({
+    fontFamily: 'mono',
+    fontSize: '11px',
+    textTransform: 'uppercase',
+    letterSpacing: '0.16em',
+    color: 'fg.muted',
+    background: 'transparent',
+    border: 'none',
+    cursor: 'pointer',
+    padding: '4px 0 4px 20px',
+    marginTop: '4px',
+    transition: 'color 200ms ease',
+    _hover: { color: 'accent.solid' },
+  }),
+  // ── Skills ─────────────────────────────────────────────────────────
+  skillsInput: css({
+    fontFamily: 'body',
+    fontSize: '15px',
+    lineHeight: 1.7,
+    color: 'fg.default',
+    width: '100%',
+    background: 'transparent',
+    border: 'none',
+    outline: 'none',
+    padding: 0,
+    resize: 'none',
+    transition: 'color 200ms ease',
+    _focus: { color: 'accent.solid' },
+    _placeholder: { color: 'fg.subtle', fontStyle: 'italic' },
+  }),
+  // ── Footer caption ─────────────────────────────────────────────────
+  footer: css({
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+    marginTop: '18px',
+  }),
+  footerLabel: css({
+    fontFamily: 'mono',
+    fontSize: '11px',
+    textTransform: 'uppercase',
+    letterSpacing: '0.18em',
+    color: 'fg.muted',
+  }),
+  footerNote: css({
+    fontFamily: 'display',
+    fontSize: '13px',
+    fontStyle: 'italic',
+    lineHeight: 1.55,
+    color: 'fg.muted',
+    marginTop: '8px',
+    maxWidth: '60ch',
+  }),
+  // ── Education entry ────────────────────────────────────────────────
+  eduBlock: css({
+    marginBottom: '16px',
+  }),
 }
 
 interface ResumePreviewProps {
@@ -94,121 +362,186 @@ interface ResumePreviewProps {
 }
 
 /**
- * WYSIWYG resume preview. What the user sees here is byte-for-byte what
- * gets exported. Every section is editable inline — the parser pulled
- * the structure, the user owns the words.
+ * WYSIWYG resume preview — reframed as a typeset proof before export.
+ *
+ * The output here is what the DOCX/PDF render. Every section is editable
+ * inline: the parser pulled the structure, the user owns the words. The
+ * visual treatment borrows the magazine-spread vocabulary — mono
+ * section rules, display-serif anchors, hairline-separated contact
+ * line — so the resume reads like a laid-out page, not a form.
  */
 export function ResumePreview({ resume, onChange }: ResumePreviewProps) {
-  return (
-    <Card>
-      <Card.Header>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-          <div>
-            <Card.Title>Preview</Card.Title>
-            <Card.Description>Edit anything — exports follow your edits.</Card.Description>
-          </div>
-          <HStack gap="2">
-            <Button
-              variant="ghost"
-              size="xs"
-              onClick={() => onChange({
-                ...resume,
-                experience: [...resume.experience, blankExperience()],
-              })}
-            >
-              + Role
-            </Button>
-            <Button
-              variant="ghost"
-              size="xs"
-              onClick={() => onChange({
-                ...resume,
-                education: [...resume.education, blankEducation()],
-              })}
-            >
-              + Education
-            </Button>
-          </HStack>
-        </div>
-      </Card.Header>
+  const isEmpty =
+    !resume.contact.name &&
+    !resume.contact.email &&
+    !resume.summary &&
+    resume.experience.length === 0 &&
+    resume.education.length === 0 &&
+    resume.skills.length === 0
 
-      <div className={styles.doc}>
-        <ContactBlock contact={resume.contact} onChange={(c) => onChange({ ...resume, contact: c })} />
+  if (isEmpty) {
+    return (
+      <div>
+        <PreviewHeader />
+        <div className={styles.empty}>
+          <div className={styles.emptyEyebrow}>Standing by</div>
+          <div className={styles.emptyLine}>
+            No draft yet. Run Optimize to typeset one.
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div>
+      <PreviewHeader />
+
+      <div className={styles.toolbar}>
+        <span className={styles.toolbarLabel}>Edit</span>
+        <Button
+          variant="ghost"
+          size="xs"
+          onClick={() =>
+            onChange({
+              ...resume,
+              experience: [...resume.experience, blankExperience()],
+            })
+          }
+        >
+          + Role
+        </Button>
+        <Button
+          variant="ghost"
+          size="xs"
+          onClick={() =>
+            onChange({
+              ...resume,
+              education: [...resume.education, blankEducation()],
+            })
+          }
+        >
+          + Education
+        </Button>
+        <span className={styles.toolbarRule} aria-hidden />
+      </div>
+
+      <div className={styles.page}>
+        <ContactBlock
+          contact={resume.contact}
+          onChange={(c) => onChange({ ...resume, contact: c })}
+        />
+
         {resume.summary !== undefined && (
-          <SummaryBlock summary={resume.summary} onChange={(s) => onChange({ ...resume, summary: s })} />
+          <>
+            <div
+              className={`${styles.sectionTitle} ${styles.sectionTitleFirst}`}
+            >
+              Summary
+            </div>
+            <SummaryBlock
+              summary={resume.summary}
+              onChange={(s) => onChange({ ...resume, summary: s })}
+            />
+          </>
         )}
+
         {resume.experience.length > 0 && (
           <>
-            <div className={styles.sectionHeader}>Experience</div>
-            <Stack gap="3">
-              {resume.experience.map((entry, i) => (
-                <ExperienceBlock
-                  key={`exp-${i}`}
-                  entry={entry}
-                  onChange={(next) =>
-                    onChange({
-                      ...resume,
-                      experience: resume.experience.map((e, j) => (i === j ? next : e)),
-                    })
-                  }
-                  onRemove={() =>
-                    onChange({
-                      ...resume,
-                      experience: resume.experience.filter((_, j) => i !== j),
-                    })
-                  }
-                />
-              ))}
-            </Stack>
+            <div className={styles.sectionTitle}>Experience</div>
+            {resume.experience.map((entry, i) => (
+              <ExperienceBlock
+                key={`exp-${i}`}
+                entry={entry}
+                onChange={(next) =>
+                  onChange({
+                    ...resume,
+                    experience: resume.experience.map((e, j) =>
+                      i === j ? next : e,
+                    ),
+                  })
+                }
+                onRemove={() =>
+                  onChange({
+                    ...resume,
+                    experience: resume.experience.filter((_, j) => i !== j),
+                  })
+                }
+              />
+            ))}
           </>
         )}
+
         {resume.education.length > 0 && (
           <>
-            <div className={styles.sectionHeader}>Education</div>
-            <Stack gap="3">
-              {resume.education.map((entry, i) => (
-                <EducationBlock
-                  key={`edu-${i}`}
-                  entry={entry}
-                  onChange={(next) =>
-                    onChange({
-                      ...resume,
-                      education: resume.education.map((e, j) => (i === j ? next : e)),
-                    })
-                  }
-                  onRemove={() =>
-                    onChange({
-                      ...resume,
-                      education: resume.education.filter((_, j) => i !== j),
-                    })
-                  }
-                />
-              ))}
-            </Stack>
+            <div className={styles.sectionTitle}>Education</div>
+            {resume.education.map((entry, i) => (
+              <EducationBlock
+                key={`edu-${i}`}
+                entry={entry}
+                onChange={(next) =>
+                  onChange({
+                    ...resume,
+                    education: resume.education.map((e, j) =>
+                      i === j ? next : e,
+                    ),
+                  })
+                }
+                onRemove={() =>
+                  onChange({
+                    ...resume,
+                    education: resume.education.filter((_, j) => i !== j),
+                  })
+                }
+              />
+            ))}
           </>
         )}
+
         {resume.skills.length > 0 && (
           <>
-            <div className={styles.sectionHeader}>Skills</div>
-            <SkillsBlock skills={resume.skills} onChange={(s) => onChange({ ...resume, skills: s })} />
+            <div className={styles.sectionTitle}>Skills</div>
+            <SkillsBlock
+              skills={resume.skills}
+              onChange={(s) => onChange({ ...resume, skills: s })}
+            />
           </>
         )}
       </div>
 
-      <Eyebrow style={{ marginTop: '20px', marginBottom: '4px' }}>
-        Source of truth
-      </Eyebrow>
-      <Text variant="muted" style={{ fontSize: '12px' }}>
+      <div className={styles.footer}>
+        <span className={styles.footerLabel}>Source of truth</span>
+      </div>
+      <p className={styles.footerNote}>
         This preview is what the DOCX and PDF render. We don't change your
         words after you do.
-      </Text>
-    </Card>
+      </p>
+    </div>
   )
 }
 
-// ──────────────────────────────────────────────────────────────────────────
-// Section blocks
-// ──────────────────────────────────────────────────────────────────────────
+// ──────────────────────────────────────────────────────────────────────
+// Section header (shared between empty + populated states)
+// ──────────────────────────────────────────────────────────────────────
+
+function PreviewHeader() {
+  return (
+    <div>
+      <div className={styles.header}>
+        <span className={styles.eyebrow}>№ Preview · Typeset proof</span>
+        <span className={styles.headerRule} aria-hidden />
+      </div>
+      <div className={styles.caption}>
+        Edit anything — exports follow your edits.
+      </div>
+    </div>
+  )
+}
+
+// ──────────────────────────────────────────────────────────────────────
+// Contact block — italic accent on the whole name, hairline-separated
+// contact line.
+// ──────────────────────────────────────────────────────────────────────
 
 function ContactBlock({
   contact,
@@ -221,46 +554,48 @@ function ContactBlock({
   return (
     <div>
       <input
-        className={styles.name}
+        className={`${styles.contactName} ${styles.contactNameEm}`}
         value={contact.name}
         onChange={(e) => update({ name: e.target.value })}
         placeholder="Your name"
         aria-label="Name"
-        style={{
-          textAlign: 'center',
-          width: '100%',
-          border: 'none',
-          background: 'transparent',
-          outline: 'none',
-        }}
       />
-      <div className={styles.contact}>
-        <HStack gap="2" style={{ flexWrap: 'wrap', justifyContent: 'center' }}>
-          <ContactField
-            label="Location"
-            value={contact.location ?? ''}
-            onChange={(v) => update({ location: v || undefined })}
-          />
-          <span>·</span>
-          <ContactField
-            label="Email"
-            value={contact.email ?? ''}
-            onChange={(v) => update({ email: v || undefined })}
-            type="email"
-          />
-          <span>·</span>
-          <ContactField
-            label="Phone"
-            value={contact.phone ?? ''}
-            onChange={(v) => update({ phone: v || undefined })}
-          />
-          <span>·</span>
-          <ContactField
-            label="LinkedIn"
-            value={contact.linkedin ?? ''}
-            onChange={(v) => update({ linkedin: v || undefined })}
-          />
-        </HStack>
+      <div className={styles.contactLine}>
+        <ContactField
+          label="Email"
+          value={contact.email ?? ''}
+          onChange={(v) => update({ email: v || undefined })}
+          type="email"
+        />
+        <span className={styles.contactSep} aria-hidden>·</span>
+        <ContactField
+          label="Phone"
+          value={contact.phone ?? ''}
+          onChange={(v) => update({ phone: v || undefined })}
+          type="tel"
+        />
+        <span className={styles.contactSep} aria-hidden>·</span>
+        <ContactField
+          label="Location"
+          value={contact.location ?? ''}
+          onChange={(v) => update({ location: v || undefined })}
+        />
+        <span className={styles.contactSep} aria-hidden>·</span>
+        <ContactField
+          label="LinkedIn"
+          value={contact.linkedin ?? ''}
+          onChange={(v) => update({ linkedin: v || undefined })}
+        />
+        {contact.portfolio && (
+          <>
+            <span className={styles.contactSep} aria-hidden>·</span>
+            <ContactField
+              label="Portfolio"
+              value={contact.portfolio ?? ''}
+              onChange={(v) => update({ portfolio: v || undefined })}
+            />
+          </>
+        )}
       </div>
     </div>
   )
@@ -279,10 +614,11 @@ function ContactField({
 }) {
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState(value)
+
   if (editing) {
     return (
       <input
-        className={styles.editInput}
+        className={styles.contactEditInput}
         type={type}
         placeholder={label}
         value={draft}
@@ -301,7 +637,7 @@ function ContactField({
           }
         }}
         autoFocus
-        style={{ width: `${Math.max(label.length, value.length, 6)}ch` }}
+        size={Math.max(label.length, value.length, 6)}
       />
     )
   }
@@ -312,19 +648,17 @@ function ContactField({
         setDraft(value)
         setEditing(true)
       }}
-      style={{
-        background: 'transparent',
-        border: 'none',
-        padding: 0,
-        color: value ? 'inherit' : 'var(--colors-fg-muted, #888)',
-        cursor: 'text',
-        font: 'inherit',
-      }}
+      className={styles.contactEditButton}
+      aria-label={`Edit ${label}`}
     >
       {value || label}
     </button>
   )
 }
+
+// ──────────────────────────────────────────────────────────────────────
+// Summary
+// ──────────────────────────────────────────────────────────────────────
 
 function SummaryBlock({
   summary,
@@ -334,27 +668,20 @@ function SummaryBlock({
   onChange: (next: string) => void
 }) {
   return (
-    <>
-      <div className={styles.sectionHeader}>Summary</div>
-      <textarea
-        className={styles.summary}
-        value={summary}
-        onChange={(e) => onChange(e.target.value)}
-        rows={3}
-        style={{
-          width: '100%',
-          fontFamily: 'body',
-          fontSize: '13px',
-          padding: '6px',
-          border: '1px solid var(--colors-border-subtle, #eee)',
-          borderRadius: '4px',
-          resize: 'vertical',
-          background: 'var(--colors-bg-surface, #fafafa)',
-        }}
-      />
-    </>
+    <textarea
+      className={styles.summaryText}
+      value={summary}
+      onChange={(e) => onChange(e.target.value)}
+      rows={3}
+      placeholder="One or two sentences. ATS-friendly; no fluff."
+      aria-label="Summary"
+    />
   )
 }
+
+// ──────────────────────────────────────────────────────────────────────
+// Experience entry
+// ──────────────────────────────────────────────────────────────────────
 
 function ExperienceBlock({
   entry,
@@ -365,55 +692,53 @@ function ExperienceBlock({
   onChange: (next: ExperienceEntry) => void
   onRemove: () => void
 }) {
-  const update = (patch: Partial<ExperienceEntry>) => onChange({ ...entry, ...patch })
+  const update = (patch: Partial<ExperienceEntry>) =>
+    onChange({ ...entry, ...patch })
+
   return (
-    <div>
+    <div className={styles.expBlock}>
       <div className={styles.expHeader}>
         <input
-          className={styles.editTitle}
+          className={styles.expTitle}
           value={[entry.title, entry.company].filter(Boolean).join(' — ')}
           onChange={(e) => {
             const v = e.target.value
             const split = v.split(/\s+—\s+/)
             if (split.length === 2) {
-              update({ title: split[0], company: split[1] })
+              update({ title: split[0] ?? '', company: split[1] ?? '' })
             } else {
               update({ title: v, company: '' })
             }
           }}
           placeholder="Job Title — Company"
+          aria-label="Job title and company"
         />
         <button
           type="button"
           onClick={onRemove}
           aria-label="Remove role"
-          style={{
-            background: 'transparent',
-            border: 'none',
-            cursor: 'pointer',
-            color: 'var(--colors-fg-muted, #888)',
-            fontSize: '11px',
-          }}
+          className={styles.removeBtn}
         >
           ✕
         </button>
       </div>
-      <HStack gap="2" style={{ marginBottom: '4px', flexWrap: 'wrap' }}>
+      <div className={styles.expMeta}>
         <input
-          className={styles.editDate}
+          className={styles.expMetaItem}
           value={entry.dateRange ?? ''}
           onChange={(e) => update({ dateRange: e.target.value || undefined })}
           placeholder="Jan 2022 – Present"
-          style={{ maxWidth: '200px' }}
+          aria-label="Date range"
         />
+        <span className={styles.expMetaSep} aria-hidden>·</span>
         <input
-          className={styles.editDate}
+          className={styles.expMetaItem}
           value={entry.location ?? ''}
           onChange={(e) => update({ location: e.target.value || undefined })}
           placeholder="Remote"
-          style={{ maxWidth: '200px' }}
+          aria-label="Location"
         />
-      </HStack>
+      </div>
       <BulletList
         bullets={entry.bullets}
         onChange={(bullets) => update({ bullets })}
@@ -421,6 +746,10 @@ function ExperienceBlock({
     </div>
   )
 }
+
+// ──────────────────────────────────────────────────────────────────────
+// Bullets — body-serif, hanging indent, hairline mark
+// ──────────────────────────────────────────────────────────────────────
 
 function BulletList({
   bullets,
@@ -433,28 +762,23 @@ function BulletList({
     <ul className={styles.bulletList}>
       {bullets.map((b, i) => (
         <li key={i} className={styles.bulletItem}>
+          <span className={styles.bulletMark} aria-hidden />
           <input
-            className={styles.editBullet}
+            className={styles.bulletInput}
             value={b}
             onChange={(e) =>
               onChange(bullets.map((x, j) => (i === j ? e.target.value : x)))
             }
             placeholder="One accomplishment per line. Quantify when you can."
+            aria-label={`Bullet ${i + 1}`}
           />
         </li>
       ))}
-      <li className={styles.bulletItem}>
+      <li>
         <button
           type="button"
           onClick={() => onChange([...bullets, ''])}
-          style={{
-            background: 'transparent',
-            border: 'none',
-            cursor: 'pointer',
-            color: 'var(--colors-fg-muted, #888)',
-            fontSize: '12px',
-            padding: 0,
-          }}
+          className={styles.addBullet}
         >
           + Add bullet
         </button>
@@ -462,6 +786,10 @@ function BulletList({
     </ul>
   )
 }
+
+// ──────────────────────────────────────────────────────────────────────
+// Education entry
+// ──────────────────────────────────────────────────────────────────────
 
 function EducationBlock({
   entry,
@@ -472,51 +800,55 @@ function EducationBlock({
   onChange: (next: EducationEntry) => void
   onRemove: () => void
 }) {
-  const update = (patch: Partial<EducationEntry>) => onChange({ ...entry, ...patch })
+  const update = (patch: Partial<EducationEntry>) =>
+    onChange({ ...entry, ...patch })
+
   return (
-    <div>
+    <div className={styles.eduBlock}>
       <div className={styles.expHeader}>
         <input
-          className={styles.editTitle}
+          className={styles.expTitle}
           value={[entry.degree, entry.field].filter(Boolean).join(', ')}
           onChange={(e) => {
             const v = e.target.value
             const [deg, field] = v.split(/,\s*/, 2)
-            update({ degree: deg, field: field })
+            update({ degree: deg, field })
           }}
           placeholder="Degree, Field"
+          aria-label="Degree and field"
         />
         <button
           type="button"
           onClick={onRemove}
           aria-label="Remove education"
-          style={{
-            background: 'transparent',
-            border: 'none',
-            cursor: 'pointer',
-            color: 'var(--colors-fg-muted, #888)',
-            fontSize: '11px',
-          }}
+          className={styles.removeBtn}
         >
           ✕
         </button>
       </div>
       <input
-        className={styles.editInput}
+        className={`${styles.expMetaItem} ${styles.expMetaItemSchool}`}
         value={entry.school}
         onChange={(e) => update({ school: e.target.value })}
         placeholder="School"
+        aria-label="School"
       />
-      <input
-        className={styles.editDate}
-        value={entry.dateRange ?? ''}
-        onChange={(e) => update({ dateRange: e.target.value || undefined })}
-        placeholder="2018 – 2022"
-        style={{ marginTop: '4px', maxWidth: '200px' }}
-      />
+      <div className={styles.expMeta}>
+        <input
+          className={styles.expMetaItem}
+          value={entry.dateRange ?? ''}
+          onChange={(e) => update({ dateRange: e.target.value || undefined })}
+          placeholder="2018 – 2022"
+          aria-label="Date range"
+        />
+      </div>
     </div>
   )
 }
+
+// ──────────────────────────────────────────────────────────────────────
+// Skills — single body-serif field, comma-separated
+// ──────────────────────────────────────────────────────────────────────
 
 function SkillsBlock({
   skills,
@@ -527,7 +859,7 @@ function SkillsBlock({
 }) {
   return (
     <textarea
-      className={styles.skillsText}
+      className={styles.skillsInput}
       value={skills.join(', ')}
       onChange={(e) =>
         onChange(
@@ -538,19 +870,15 @@ function SkillsBlock({
         )
       }
       rows={2}
-      style={{
-        width: '100%',
-        fontFamily: 'body',
-        fontSize: '13px',
-        padding: '6px',
-        border: '1px solid var(--colors-border-subtle, #eee)',
-        borderRadius: '4px',
-        resize: 'vertical',
-        background: 'var(--colors-bg-surface, #fafafa)',
-      }}
+      placeholder="Comma-separated. Keep it honest."
+      aria-label="Skills"
     />
   )
 }
+
+// ──────────────────────────────────────────────────────────────────────
+// Blank-entry factories
+// ──────────────────────────────────────────────────────────────────────
 
 function blankExperience(): ExperienceEntry {
   return { title: '', company: '', bullets: [] }
