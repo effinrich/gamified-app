@@ -126,9 +126,9 @@ const styles = {
     fontStyle: 'italic',
     color: 'accent.solid',
   }),
-  // Right rail — mono uppercase links + accent CTA. Hidden CTA cluster on
-  // the small breakpoint feels right for a magazine masthead, but we keep
-  // the nav links visible at every size to preserve anchor scroll behavior.
+  // Right rail — mono uppercase links + accent CTA. The left dateline is hidden
+  // on the small breakpoint, but the anchor links remain visible at every size
+  // to preserve in-page scroll behavior.
   links: css({
     justifySelf: { base: 'end', md: 'end' },
     display: 'inline-flex',
