@@ -2,8 +2,6 @@ import { css } from 'styled-system/css'
 import type { Application, Stage } from '~/shared/jobs'
 import { adjacentStage } from '../utils'
 import { TrackerCard } from './TrackerCard'
-import { Badge } from '~/components/ui/badge'
-import { Card } from '~/components/ui/card'
 
 interface TrackerColumnProps {
   stage: Stage
@@ -12,75 +10,129 @@ interface TrackerColumnProps {
   onMove: (id: number, stage: Stage) => void
 }
 
+// Per-stage magazine number — `APPLIED · № 01`, `SCREENING · № 02`, etc.
+// Kept here (not in `types.ts`) so the numbering is owned by the partial
+// and is one-indexed to match the dashboard's `01 / 02 / 03` ToC cadence.
+const COLUMN_NUMBERS: Record<Stage, string> = {
+  applied: '№ 01',
+  screening: '№ 02',
+  interview: '№ 03',
+  offer: '№ 04',
+}
+
+const COLUMN_LABELS: Record<Stage, string> = {
+  applied: 'Applied',
+  screening: 'Screening',
+  interview: 'Interview',
+  offer: 'Offer',
+}
+
 const styles = {
-  root: css({
-    padding: '20px',
-    minHeight: '400px',
+  // Column frame — a hairline block. Top + bottom rules frame the
+  // editorial column; the inset surface lets cards visually float inside.
+  frame: css({
+    borderWidth: '1px',
+    borderColor: 'border.default',
+    backgroundColor: 'bg.surface',
     display: 'flex',
     flexDirection: 'column',
+    minHeight: '400px',
+    scrollSnapAlign: { base: 'start', lg: 'none' },
   }),
+  // Header row — `APPLIED · № 01` mono uppercase label, hairline rule,
+  // mono `N roles` count. No badge fills, no chips.
   header: css({
     display: 'flex',
+    alignItems: 'baseline',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '16px',
-    paddingBottom: '12px',
+    gap: '12px',
+    padding: '14px 16px 12px',
     borderBottomWidth: '1px',
-    borderColor: 'border.subtle',
+    borderColor: 'border.default',
   }),
-  name: css({
-    fontSize: '12px',
+  label: css({
+    fontFamily: 'mono',
+    fontSize: '11px',
     fontWeight: 600,
     textTransform: 'uppercase',
-    letterSpacing: '0.08em',
-    color: 'fg.muted',
+    letterSpacing: '0.18em',
+    color: 'fg.default',
+  }),
+  num: css({
+    color: 'accent.solid',
+  }),
+  count: css({
     fontFamily: 'mono',
+    fontSize: '10px',
+    textTransform: 'uppercase',
+    letterSpacing: '0.18em',
+    color: 'fg.subtle',
   }),
+  // Body — inset surface block so cards visually float inside the frame.
+  body: css({
+    padding: '14px 12px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '10px',
+    flex: 1,
+  }),
+  // Empty state — mono `No roles standing by.` rather than centered copy.
   empty: css({
-    padding: '40px 12px',
-    textAlign: 'center',
-    color: 'fg.muted',
-    fontSize: '13px',
-    fontStyle: 'italic',
-    fontFamily: 'display',
-    opacity: 0.7,
-    lineHeight: '1.5',
-    whiteSpace: 'pre-line',
+    fontFamily: 'mono',
+    fontSize: '11px',
+    textTransform: 'uppercase',
+    letterSpacing: '0.18em',
+    color: 'fg.subtle',
+    padding: '40px 4px',
   }),
 }
 
-const EMPTY_COPY: Record<Stage, string> = {
-  applied: 'Nothing here yet.\nThat’s a kind of progress.',
-  screening: 'Silence is data,\nnot failure.',
-  interview: 'No conversations\nin motion right now.',
-  offer: 'When the moment\ncomes, it lands here.',
+// Render the column header label. Split so the numeral can pick up the
+// accent color independently of the label — same gesture the Discover
+// `issue` chip uses (`Discover · № 01`).
+function ColumnLabel({ stage }: { stage: Stage }) {
+  return (
+    <span className={styles.label}>
+      <span>{COLUMN_LABELS[stage].toUpperCase()}</span>
+      {' · '}
+      <span className={styles.num}>{COLUMN_NUMBERS[stage]}</span>
+    </span>
+  )
 }
 
-export function TrackerColumn({ stage, name, cards, onMove }: TrackerColumnProps) {
+export function TrackerColumn({
+  stage,
+  name,
+  cards,
+  onMove,
+}: TrackerColumnProps) {
   const prevStage = adjacentStage(stage, -1)
   const nextStage = adjacentStage(stage, 1)
+  const count = cards.length
+  const countLabel = `${count} ${count === 1 ? 'role' : 'roles'}`
 
   return (
-    <Card className={styles.root}>
-      <div className={styles.header}>
-        <span className={styles.name}>{name}</span>
-        <Badge variant="subtle" size="sm">
-          {cards.length}
-        </Badge>
+    <section className={styles.frame} aria-label={name} data-stage={stage}>
+      <header className={styles.header}>
+        <ColumnLabel stage={stage} />
+        <span className={styles.count}>{countLabel}</span>
+      </header>
+
+      <div className={styles.body}>
+        {cards.length === 0 ? (
+          <div className={styles.empty}>No roles standing by.</div>
+        ) : (
+          cards.map((app) => (
+            <TrackerCard
+              key={app.id}
+              application={app}
+              prevStage={prevStage}
+              nextStage={nextStage}
+              onMove={onMove}
+            />
+          ))
+        )}
       </div>
-      {cards.length === 0 ? (
-        <div className={styles.empty}>{EMPTY_COPY[stage]}</div>
-      ) : (
-        cards.map((app) => (
-          <TrackerCard
-            key={app.id}
-            application={app}
-            prevStage={prevStage}
-            nextStage={nextStage}
-            onMove={onMove}
-          />
-        ))
-      )}
-    </Card>
+    </section>
   )
 }
