@@ -48,7 +48,7 @@ export function HowItWorks({ steps }: { steps: Step[] }) {
 
               <div className={styles.stepHeader}>
                 <Eyebrow className={styles.stepEyebrow}>Phase {step.num}</Eyebrow>
-                <span className={styles.stepNum} aria-hidden>
+                <span className={styles.stepNum} aria-hidden data-lead={isLead ? 'true' : undefined}>
                   {step.num}
                 </span>
               </div>
