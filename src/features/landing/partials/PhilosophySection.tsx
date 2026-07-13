@@ -72,9 +72,7 @@ export function PhilosophySection({ pairs }: { pairs: PhilosophyPair[] }) {
                 <div className={cx(styles.colEyebrow, styles.colEyebrowAlt)}>
                   {reply.q}
                 </div>
-                <div className={cx(styles.voice, styles.voiceReply)}>
-                  &ldquo;{reply.a}&rdquo;
-                </div>
+                  &ldquo;{reply.a.replace(/^"|"$/g, '')}&rdquo;
               </div>
             </div>
           </article>
