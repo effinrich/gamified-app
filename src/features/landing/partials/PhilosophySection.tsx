@@ -116,8 +116,6 @@ const styles = {
     display: 'inline-block',
     marginBottom: '20px',
     animation: 'fadeIn 600ms ease both',
-    animationDelay: '120ms',
-    animationFillMode: 'both',
   }),
   grid: css({
     display: 'flex',
