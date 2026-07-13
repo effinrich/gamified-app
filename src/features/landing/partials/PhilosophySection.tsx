@@ -63,9 +63,7 @@ export function PhilosophySection({ pairs }: { pairs: PhilosophyPair[] }) {
             <div className={styles.cols}>
               <div className={styles.col}>
                 <div className={styles.colEyebrow}>{indictment.q}</div>
-                <div className={cx(styles.voice, styles.voiceIndictment)}>
-                  &ldquo;{indictment.a}&rdquo;
-                </div>
+                  &ldquo;{indictment.a.replace(/^"|"$/g, '')}&rdquo;
               </div>
 
               <div className={styles.divider} aria-hidden />
