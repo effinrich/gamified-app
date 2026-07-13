@@ -201,8 +201,3 @@ const styles = {
     marginTop: 'auto',
   }),
 }
-
-// STEP_COL_START is unused at the call site (we use `grid-column: auto / span
-// N` for the asymmetric spread). Kept exported as a constant in case the
-// layout ever needs explicit start positions for down-the-page reasoning.
-const STEP_COL_START = [1, 6, 10, 12] as const
