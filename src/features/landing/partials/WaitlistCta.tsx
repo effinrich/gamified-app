@@ -52,7 +52,7 @@ export function WaitlistCta() {
           </Text>
 
           {joined ? (
-            <div className={styles.thanksRow}>
+            <div className={styles.thanksRow} role="status" aria-live="polite">
               <span className={styles.thanksChip}>Received</span>
               <Text className={styles.thanksCopy}>
                 Thanks — you're on the list. We'll be in touch.
