@@ -68,6 +68,9 @@ export function WaitlistCta() {
             >
               <Input
                 type="email"
+                name="email"
+                autoComplete="email"
+                aria-label="Email address"
                 size="lg"
                 placeholder="you@example.com"
                 required
